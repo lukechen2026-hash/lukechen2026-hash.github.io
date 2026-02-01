@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>青岛银行 · 数智触客系统</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#C91F37',
+            primaryLight: '#FDECEC'
+          },
+          borderRadius: {
+            '2xl': '16px',
+            '3xl': '20px'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f9fafb;
+      overscroll-behavior: contain;
+    }
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    .ripple::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+    }
+    @keyframes ripple {
+      to { transform: scale(2); opacity: 0; }
+    }
+    .form-input {
+      @apply w-full px-4 py-3.5 border border-gray-300 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition;
+    }
+    .status-bar {
+      height: 24px;
+      background: #C91F37;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .safe-area-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+  </style>
+</head>
+<body class="pb-24">
+
+<div id="app" class="max-w-sm mx-auto bg-white min-h-screen relative"></div>
+
+<!-- 底部导航（仅在需要时显示） -->
+<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white border-t border-gray-200 flex justify-around py-2 px-4 hidden safe-area-bottom">
+  <a href="#" onclick="navigate('home')" class="flex flex-col items-center text-xs text-gray-500 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-1 group-[.active]/nav:text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+    <span>首页</span>
+  </a>
+  <a href="#" onclick="navigate('opportunities')" class="flex flex-col items-center text-xs text-gray-500 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-1 group-[.active]/nav:text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+    </svg>
+    <span>商机</span>
+  </a>
+  <a href="#" onclick="navigate('capture')" class="flex flex-col items-center text-xs text-gray-500 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-1 group-[.active]/nav:text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+    <span>采集</span>
+  </a>
+  <a href="#" onclick="navigate('report')" class="flex flex-col items-center text-xs text-gray-500 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-1 group-[.active]/nav:text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+    </svg>
+    <span>报告</span>
+  </a>
+  <a href="#" onclick="navigate('profile')" class="flex flex-col items-center text-xs text-gray-500 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mb-1 group-[.active]/nav:text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+    </svg>
+    <span>我的</span>
+  </a>
+</nav>
+
+<script>
+// ========== 状态管理 ==========
+let state = {
+  isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
+  currentOpportunityId: null,
+  currentStep: 0,
+  opportunities: JSON.parse(localStorage.getItem('opportunities')) || [
+    { id: 1, name: '日照港集团有限公司', address: '东港区海滨五路', industry: '交通运输', status: '跟进中', tags: ['港口', '国企', 'AAA'], logo: 'RG' },
+    { id: 2, name: '山东钢铁集团日照公司', address: '岚山区沿海路', industry: '制造业', status: '已触达', tags: ['钢铁', '出口', '重资产'], logo: 'SG' },
+    { id: 3, name: '金马工业集团股份有限公司', address: '经开区深圳路', industry: '汽车零部件', status: '未触达', tags: ['民企', '高新技术'], logo: 'JM' },
+    { id: 4, name: '日照水务集团', address: '东港区烟台路', industry: '公用事业', status: '已触达', tags: ['市政', '稳定现金流'], logo: 'SW' }
+  ],
+  captureData: JSON.parse(localStorage.getItem('captureData')) || {}
+};
+
+function saveState() {
+  localStorage.setItem('isLoggedIn', state.isLoggedIn);
+  localStorage.getItem('opportunities') && localStorage.setItem('opportunities', JSON.stringify(state.opportunities));
+  localStorage.setItem('captureData', JSON.stringify(state.captureData));
+}
+
+// ========== 导航 ==========
+function navigate(page) {
+  if (!state.isLoggedIn && page !== 'login') {
+    renderLogin();
+    return;
+  }
+  document.getElementById('bottom-nav').classList.remove('hidden');
+  switch(page) {
+    case 'home': renderHome(); break;
+    case 'opportunities': renderOpportunities(); setActiveNav('opportunities'); break;
+    case 'report': renderReport(); setActiveNav('report'); break;
+	 case 'capture': renderCapture(); break;
+    case 'profile': renderProfile(); setActiveNav('profile'); break;
+    default: renderHome(); setActiveNav('home');
+  }
+}
+
+function setActiveNav(activePage) {
+  const navLinks = document.querySelectorAll('#bottom-nav a');
+  navLinks.forEach(link => {
+    const page = link.getAttribute('onclick').match(/'(\w+)'/)[1];
+    if (page === activePage) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
+
+// ========== 页面渲染 ==========
+function renderLogin() {
+  document.getElementById('bottom-nav').classList.add('hidden');
+  document.getElementById('app').innerHTML = `
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="ml-auto flex space-x-1">
+        <span>📶</span><span>🔋</span>
+      </div>
+    </div>
+    <div class="p-6 pt-12 text-center">
+      <div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <span class="text-white text-2xl font-bold">QD</span>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">青岛银行</h1>
+      <p class="text-gray-600 mb-8">日照分行 · 数智触客系统</p>
+      
+      <div class="bg-white rounded-3xl shadow-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6">客户经理登录</h2>
+        
+        <div class="mb-5 text-left">
+          <label class="block text-sm font-medium text-gray-700 mb-2">工号</label>
+          <input type="text" id="empId" class="form-input" placeholder="请输入您的工号" value="1001" />
+        </div>
+        
+        <div class="mb-6 text-left">
+          <label class="block text-sm font-medium text-gray-700 mb-2">验证码</label>
+          <div class="flex space-x-3">
+            <input type="text" id="code" class="form-input flex-1" placeholder="6位数字" maxlength="6" />
+            <button class="bg-gray-100 text-gray-700 px-4 rounded-xl font-medium ripple" onclick="sendCode()">获取</button>
+          </div>
+        </div>
+        
+        <button class="w-full bg-primary text-white py-3.5 rounded-xl font-semibold ripple" onclick="doLogin()">
+          登录
+        </button>
+      </div>
+      
+      <p class="text-xs text-gray-500 mt-6">© 2026 青岛银行股份有限公司</p>
+    </div>
+  `;
+}
+
+function doLogin() {
+  const empId = document.getElementById('empId').value;
+  const code = document.getElementById('code').value;
+  if (empId && code.length === 6) {
+    state.isLoggedIn = true;
+    saveState();
+    navigate('opportunities');
+  } else {
+    alert('请输入正确的6位验证码');
+  }
+}
+
+function sendCode() {
+  alert('验证码已发送至您的手机（演示用）');
+}
+
+// --- 商机列表 ---
+function renderOpportunities() {
+  const listHtml = state.opportunities.map(op => {
+    let statusClass = 'bg-gray-100 text-gray-800';
+    if (op.status === '已触达') statusClass = 'bg-blue-100 text-blue-800';
+    else if (op.status === '跟进中') statusClass = 'bg-yellow-100 text-yellow-800';
+    else if (op.status === '已转化') statusClass = 'bg-green-100 text-green-800';
+
+    return `
+      <div class="bg-white rounded-2xl p-4 shadow-sm mb-3 ripple" onclick="viewOpportunity(${op.id})">
+        <div class="flex items-start">
+          <div class="w-12 h-12 rounded-xl bg-primaryLight flex items-center justify-center mr-3 flex-shrink-0">
+            <span class="text-primary font-bold">${op.logo}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between">
+              <h3 class="font-semibold text-gray-900 truncate">${op.name}</h3>
+              <span class="px-2 py-1 rounded-full text-xs ${statusClass}">${op.status}</span>
+            </div>
+            <p class="text-gray-600 text-sm mt-1">${op.address}</p>
+            <div class="flex flex-wrap gap-1 mt-2">
+              ${op.tags.map(tag => `<span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-full">${tag}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="ml-auto flex space-x-1">
+        <span>📶</span><span>🔋</span>
+      </div>
+    </div>
+    <div class="p-4">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-xl font-bold text-gray-900">我的商机</h2>
+        <button class="text-primary text-sm font-medium">筛选</button>
+      </div>
+      
+      <div class="text-center text-gray-500 text-xs mb-3">↓ 下拉可刷新</div>
+      
+      ${listHtml}
+      
+      <div class="text-center mt-6">
+        <button class="text-primary font-medium ripple" onclick="startNewCapture()">+ 新建客户采集</button>
+      </div>
+    </div>
+  `;
+}
+
+function viewOpportunity(id) {
+  state.currentOpportunityId = id;
+  saveState();
+  startNewCapture();
+}
+
+function startNewCapture() {
+  state.currentStep = 0;
+  const opp = state.opportunities.find(o => o.id === state.currentOpportunityId);
+  state.captureData = { 
+    opportunityId: state.currentOpportunityId,
+    companyName: opp?.name || ''
+  };
+  saveState();
+  navigate('capture');
+}
+
+// --- 画像采集（6步）---
+const steps = ['股东背景', '产品情况', '销售环节', '生产情况', '采购环节', '融资情况'];
+
+function renderCapture() {
+  const step = state.currentStep;
+  const stepName = steps[step];
+  const opp = state.opportunities.find(o => o.id === state.currentOpportunityId) || {};
+
+  let formContent = '';
+  switch(step) {
+    case 0:
+      formContent = `
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-800 mb-1">企业全称</label>
+            <input type="text" value="${opp.name || ''}" disabled
+              class="w-full px-4 py-3.5 bg-gray-100 rounded-xl text-gray-600" />
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-800 mb-1">实际控制人</label>
+            <input type="text" value="${state.captureData.actualController || ''}"
+              class="form-input" placeholder="请输入姓名"
+              oninput="updateCapture('actualController', this.value)" />
+            <p class="text-xs text-gray-500 mt-1">需与营业执照一致</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-800 mb-1">实控人持股比例 (%)</label>
+            <div class="relative">
+              <input type="number" min="0" max="100" value="${state.captureData.controllerShare || ''}"
+                class="form-input pr-12" placeholder="例如：65"
+                oninput="updateCapture('controllerShare', this.value)" />
+              <span class="absolute right-4 top-3.5 text-gray-500">%</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-800 mb-1">股权结构图</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              <p class="mt-2 text-sm text-gray-600">点击上传或拍照</p>
+            </div>
+          </div>
+        </div>
+      `;
+      break;
+    case 1:
+      formContent = `
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-800 mb-1">主营产品/服务</label>
+            <textarea rows="2" class="form-input" placeholder="例如：港口装卸、钢材出口..."
+              oninput="updateCapture('mainProducts', this.value)">${state.captureData.mainProducts || ''}</textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-800 mb-1">毛利率 (%)</label>
+              <input type="number" value="${state.captureData.grossMargin || ''}"
+                class="form-input" placeholder="例如：25"
+                oninput="updateCapture('grossMargin', this.value)" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-800 mb-1">年营收 (万元)</label>
+              <input type="number" value="${state.captureData.annualRevenue || ''}"
+                class="form-input" placeholder="例如：50000"
+                oninput="updateCapture('annualRevenue', this.value)" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-800 mb-1">在手订单量 (万元)</label>
+            <input type="number" value="${state.captureData.orderAmount || ''}"
+              class="form-input" placeholder="当前有效订单总额"
+              oninput="updateCapture('orderAmount', this.value)" />
+          </div>
+        </div>
+      `;
+      break;
+    default:
+      formContent = `
+        <div class="text-center py-12">
+          <div class="text-5xl mb-4">📊</div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">${stepName}</h3>
+          <p class="text-gray-500 max-w-xs mx-auto">此模块包含多项专业字段，正式版将展开详细问卷</p>
+          <div class="mt-6 bg-blue-50 rounded-xl p-4 text-left">
+            <p class="text-sm text-blue-800 font-medium">💡 示例问题：</p>
+            <ul class="list-disc pl-5 mt-1 text-sm text-blue-700 space-y-1">
+              <li>主要原材料采购渠道及账期？</li>
+              <li>是否存在季节性生产波动？</li>
+              <li>上下游客户集中度如何？</li>
+            </ul>
+          </div>
+        </div>
+      `;
+  }
+
+  document.getElementById('app').innerHTML = `
+    <div class="min-h-screen bg-gray-50">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="ml-auto flex space-x-1">
+          <span>📶</span><span>🔋</span>
+        </div>
+      </div>
+
+      <div class="bg-white px-4 py-3 flex items-center shadow-sm">
+        ${step > 0 ? `<button onclick="prevStep()" class="p-2 -ml-2 ripple">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>` : '<div class="w-10"></div>'}
+        <div class="flex-1 text-center font-semibold text-gray-800">${stepName}</div>
+        <div class="w-10"></div>
+      </div>
+
+      <div class="px-4 py-5">
+        <div class="flex justify-between mb-2">
+          ${steps.map((_, i) => `<span class="text-xs ${i <= step ? 'text-primary font-medium' : 'text-gray-400'}">${steps[i]}</span>`).join('')}
+        </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full bg-primary transition-all duration-500" style="width: ${(step + 1) * (100 / 6)}%"></div>
+        </div>
+      </div>
+
+<div class="bg-white rounded-t-3xl -mt-6 pt-8 pb-8 px-5">
+        ${formContent}
+      </div>
+
+<!-- 移除 fixed，作为普通流式元素 -->
+<div class="mt-8 pb-6 px-4 safe-area-bottom">
+  <button class="w-full bg-primary text-white py-3.5 rounded-xl font-semibold shadow-lg ripple"
+    onclick="${step < 5 ? 'nextStep()' : 'submitCapture()'}">
+    ${step < 5 ? '下一步' : '完成采集'}
+  </button>
+  <p class="text-center text-xs text-gray-500 mt-2">📍 自动定位：日照市 ${opp.address || ''}</p>
+</div>
+    </div>
+  `;
+}
+
+function updateCapture(key, value) {
+  state.captureData[key] = value;
+  saveState();
+}
+
+function nextStep() {
+  if (state.currentStep < 5) {
+    state.currentStep++;
+    saveState();
+    renderCapture();
+  }
+}
+
+function prevStep() {
+  if (state.currentStep > 0) {
+    state.currentStep--;
+    saveState();
+    renderCapture();
+  }
+}
+
+function submitCapture() {
+  const opp = state.opportunities.find(o => o.id === state.currentOpportunityId);
+  if (opp) {
+    opp.status = '跟进中';
+    saveState();
+  }
+  state.captureData.submittedAt = new Date().toLocaleString('zh-CN', { 
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit'
+  });
+  saveState();
+  alert('采集完成！正在生成智能分析报告...');
+  navigate('report');
+}
+
+// --- 报告预览 ---
+function renderReport() {
+  const data = state.captureData;
+  const opp = state.opportunities.find(o => o.id === data.opportunityId) || {};
+  
+  const products = [
+    { name: '出口快贷', reason: '检测到出口业务及订单增长', icon: '✈️' },
+    { name: '科创贷', reason: '高新技术企业资质匹配', icon: '🔬' },
+    { name: '供应链票据贴现', reason: '建议优化应收账款周转', icon: '📄' }
+  ];
+
+  document.getElementById('app').innerHTML = `
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="ml-auto flex space-x-1">
+        <span>📶</span><span>🔋</span>
+      </div>
+    </div>
+    <div class="p-4">
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">智能走访报告</h1>
+        <p class="text-gray-600">${data.submittedAt || '—'}</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm p-5 mb-5">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 rounded-xl bg-primaryLight flex items-center justify-center mr-3">
+            <span class="text-primary font-bold">${opp.logo || '??'}</span>
+          </div>
+          <div>
+            <h2 class="font-bold text-lg">${opp.name || '未知企业'}</h2>
+            <p class="text-gray-600 text-sm">${opp.address}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div class="bg-gray-50 rounded-xl p-3 text-center">
+            <p class="text-xs text-gray-600">毛利率</p>
+            <p class="font-semibold">${data.grossMargin ? data.grossMargin + '%' : '—'}</p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-3 text-center">
+            <p class="text-xs text-gray-600">年营收</p>
+            <p class="font-semibold">${data.annualRevenue ? data.annualRevenue + '万' : '—'}</p>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <h3 class="font-medium text-gray-800 mb-2">关键信息</h3>
+          <ul class="text-sm text-gray-700 space-y-1">
+            <li>• 实控人：${data.actualController || '未填写'}</li>
+            <li>• 主营产品：${data.mainProducts || '未填写'}</li>
+            <li>• 在手订单：${data.orderAmount ? data.orderAmount + '万元' : '未填写'}</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 class="font-bold text-lg mb-4">智能产品推荐</h2>
+      ${products.map(p => `
+        <div class="bg-white rounded-2xl shadow-sm p-4 mb-3 ripple">
+          <div class="flex items-start">
+            <span class="text-2xl mr-3">${p.icon}</span>
+            <div>
+              <h3 class="font-bold">${p.name}</h3>
+              <p class="text-sm text-gray-600 mt-1">${p.reason}</p>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+
+      <div class="flex justify-center space-x-4 mt-8">
+        <button class="flex-1 bg-white border border-primary text-primary py-3 rounded-xl font-medium ripple" onclick="exportPDF()">
+          导出PDF
+        </button>
+        <button class="flex-1 bg-primary text-white py-3 rounded-xl font-medium ripple" onclick="shareReport()">
+          内部分享
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function exportPDF() {
+  alert('正在生成PDF...\n（POC模式：文件将保存至“下载”目录）');
+}
+
+function shareReport() {
+  alert('报告已同步至分行管理后台，并通知团队成员！');
+}
+
+// --- 其他页面 ---
+function renderHome() {
+  document.getElementById('app').innerHTML = `
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="ml-auto flex space-x-1">
+        <span>📶</span><span>🔋</span>
+      </div>
+    </div>
+    <div class="p-6 pt-12 text-center">
+      <div class="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <span class="text-white text-3xl font-bold">QD</span>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">青岛银行</h1>
+      <p class="text-gray-600">日照分行 · 数智触客系统</p>
+      <div class="mt-10 bg-primaryLight rounded-2xl p-5">
+        <p class="text-primary font-medium">🎯 当前任务</p>
+        <p class="mt-2">您有 <span class="font-bold">4</span> 条待跟进商机</p>
+        <button class="mt-4 bg-primary text-white py-2 px-6 rounded-lg text-sm ripple" onclick="navigate('opportunities')">
+          查看商机
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderProfile() {
+  document.getElementById('app').innerHTML = `
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="ml-auto flex space-x-1">
+        <span>📶</span><span>🔋</span>
+      </div>
+    </div>
+    <div class="p-4">
+      <div class="bg-white rounded-2xl shadow-sm p-6 text-center mb-6">
+        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="text-gray-600 text-xl">👤</span>
+        </div>
+        <h2 class="text-xl font-bold">张经理</h2>
+        <p class="text-gray-600">工号：1001 | 日照分行</p>
+        <p class="text-sm text-gray-500 mt-2">本月已完成 12 次客户走访</p>
+      </div>
+
+      <div class="space-y-3">
+        <div class="bg-white rounded-2xl p-4 flex items-center ripple">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span class="flex-1 text-left">系统设置</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-4 flex items-center ripple">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span class="flex-1 text-left">操作手册</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-4 flex items-center ripple" onclick="logout()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span class="flex-1 text-left text-red-500">退出登录</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function logout() {
+  if (confirm('确定要退出登录吗？')) {
+    state.isLoggedIn = false;
+    saveState();
+    renderLogin();
+  }
+}
+
+// ========== 初始化 ==========
+if (state.isLoggedIn) {
+  navigate('opportunities');
+  setActiveNav('opportunities');
+} else {
+  renderLogin();
+}
+</script>
+
+</body>
+</html>
